@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { BottomGradient } from "@/components/BottomGradient";
@@ -29,6 +29,7 @@ const formSchema = z.object({
 })
 
 export default function Login() {
+    const [loading, setLoading] = useState(false);
     const router = useRouter()
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -39,10 +40,13 @@ export default function Login() {
     })
 
     const handleSubmit = async (value: z.infer<typeof formSchema>) => {
-        console.log(value);
-        const user = await fetchRandomUser();
-        saveUser(user);
-        router.replace('/dashboard')
+        try {
+            setLoading(true)
+            const user = await fetchRandomUser();
+            saveUser(user);
+            router.replace('/dashboard')
+        } catch {}
+        setLoading(false)
     };
 
     return (
@@ -78,8 +82,9 @@ export default function Login() {
                         />
 
                         <button
-                            className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
+                            className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-80 cursor-pointer disabled:from-black/60 disabled:cursor-wait"
                             type="submit"
+                            disabled={loading}
                         >
                             Login &rarr;
                             <BottomGradient />
