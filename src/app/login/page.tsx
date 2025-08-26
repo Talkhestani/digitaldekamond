@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form"
 import { fetchRandomUser } from "@/lib/fetchUser";
 import { saveUser } from "@/lib/storage";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
     phone: z
@@ -28,6 +29,8 @@ const formSchema = z.object({
 })
 
 export default function Login() {
+    const router = useRouter()
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -39,6 +42,7 @@ export default function Login() {
         console.log(value);
         const user = await fetchRandomUser();
         saveUser(user);
+        router.replace('/dashboard')
     };
 
     return (
